@@ -23,6 +23,8 @@ export class DelivaryDto{
   
     @IsNotEmpty()
     address: string;
+    @IsNotEmpty()
+    gender: string;
 
     @MinLength (4,{message:"Password is minimum 4 charecter"})
     password: string;
@@ -40,7 +42,7 @@ export class LoginDTO {
 }
 export class statusDTO {
     @IsNotEmpty()
-    @IsIn(['pending', 'in_progress', 'completed'])
+    @IsIn(['pending', 'in_progress', 'completed','rejected'])
     Status: string;
     Seller: string;
     Receiver: string;
@@ -50,7 +52,7 @@ export class statusDTO {
     Area: string;
     phone: number;
     id: number;
-    Delivary_manId: number;
+    delivaryManEmail:string;
   }
   
   export class updateProfileDTO{

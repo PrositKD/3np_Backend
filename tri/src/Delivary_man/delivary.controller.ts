@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe,Delete, UseInterceptors, Put, Patch, ParseIntPipe, UploadedFile, NotFoundException, HttpStatus, Session, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe,Delete, UseInterceptors, Put, Patch, ParseIntPipe, UploadedFile, NotFoundException, HttpStatus, Session, UseGuards, Res } from "@nestjs/common";
 import { DelivaryService } from "./delivary.service";
 import { DelivaryDto, LoginDTO, statusDTO, updateProfileDTO } from "./delivary.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -8,6 +8,7 @@ import { IsNull } from "typeorm";
 import { SessionGuard } from "./session.gaurd";
 import { promises } from "dns";
 import { DelivaryDEntity } from "./delivaryD.entity";
+import { profile } from "console";
 
 
 @Controller('delivary')
@@ -17,11 +18,29 @@ export class DelivaryController{
     getIndex():any {
         return this.delivaryService.getIndex();
     }
-    @Get('/search/:id')
-getDelivaryById(@Param() id:number): any {
-return this.delivaryService.getDelivaryById(id);
-}
+    @Get('/profile/:email')
+async getDelivaryById(@Param() email:string): Promise<any> {
+return await this.delivaryService.getDelivaryById(email);
 
+}
+@Get(":email")
+  async findByEmail(@Param("email") email: string) {
+    try {
+      const delivary = await this.delivaryService.findByEmail(email);
+      return delivary;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        // Handle not found case
+        return { message: error.message };
+      }
+      // Handle other errors
+      return { message: "An error occurred while fetching the data." };
+    }
+  }
+  @Get('/getimage/:name')
+  getImages(@Param('name') name, @Res() res) {
+      res.sendFile(name, { root: './uploads' })
+  }
 
 @Post('/signup')
 @UseInterceptors(
@@ -83,7 +102,7 @@ return this.delivaryService.signup(data);
 
 
   @Delete('/delete/:id')
-  @UseGuards(SessionGuard)
+ // @UseGuards(SessionGuard)
  async deleteDeliveryById(@Param('id',ParseIntPipe) id: number): Promise<any> {
    await this.delivaryService.deleteDelivaryById(id);
    return 'product delete successfully';
@@ -100,7 +119,7 @@ return this.delivaryService.signup(data);
   //   }
     
     @Get('/orders/:location')
-   @UseGuards(SessionGuard)
+  // @UseGuards(SessionGuard)
   async findOrdersByLocation(@Param('location') location: string): Promise<SellerEntity[]> {
     const res = await this.delivaryService.getOrderByLocation(location)
     if (res !== null && res.length > 0) {
@@ -114,7 +133,24 @@ return this.delivaryService.signup(data);
       });
   }
   }
-
+  @Get('/myorders/:location')
+  // @UseGuards(SessionGuard)
+  async findOrdersByEmail(@Param('location') location: string): Promise<SellerEntity[]> {
+    const res = await this.delivaryService.getOrderByEmail(location)
+    if (res !== null && res.length > 0) {
+      console.log(res);
+      return res;
+  }
+}
+@Get('/history/:location')
+  // @UseGuards(SessionGuard)
+  async findHistoryByEmail(@Param('location') location: string): Promise<SellerEntity[]> {
+    const res = await this.delivaryService.getHistoryEmail(location)
+    if (res !== null && res.length > 0) {
+      console.log(res);
+      return res;
+  }
+}
 
     @Patch('/updateStatus')
     @UseGuards(SessionGuard)
@@ -149,7 +185,7 @@ return this.delivaryService.signup(data);
   //  }
   //  }
     @Put('/updatedelivary/:id')  //update the orders status by id
-    @UseGuards(SessionGuard)
+   // @UseGuards(SessionGuard)
     @UsePipes(new ValidationPipe())
     updatedelivaryId(@Param('id',ParseIntPipe) id: number, @Body() data: statusDTO): object {
         return this.delivaryService.updatedelivaryId(id, data);
@@ -164,5 +200,8 @@ return this.delivaryService.signup(data);
        return  this.delivaryService.updated(id,data);
 
     }
-    
+    @Get('/product/:Id')
+    getproduct(@Param('Id') Id: number): any {
+      return this.delivaryService.getProductById(Id);
+    }
 }

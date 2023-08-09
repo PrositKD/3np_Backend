@@ -20,6 +20,8 @@ export class DelivaryDEntity{
   
     @Column({type:"varchar",length:100})
     address: string;
+    @Column({type:"varchar",length:20})
+    gender: string;
     @OneToOne(() => DelivaryEntity, delivaryEntity => delivaryEntity.delivaryDEntity,{ cascade: true })
     @JoinColumn()
     delivary: DelivaryEntity;

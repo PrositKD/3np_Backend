@@ -26,13 +26,13 @@ export class SellerService {
     seller.phone = createSellerDto.phone;
     seller.Status = createSellerDto.Status;
 
-    const delivary = await this.delivaryRepository.findOne({ where: { email: createSellerDto.delivaryManEmail } });
-    seller.Delivary_man = delivary;
-    if (!delivary) {
-      throw new NotFoundException('Delivery ID not found');
-    }
-    else{
+    // const delivary = await this.delivaryRepository.findOne({ where: { email: createSellerDto.delivaryManEmail } });
+    // seller.Delivary_man = delivary;
+    // if (!delivary) {
+    //   throw new NotFoundException('Delivery ID not found');
+    // }
+    // else{
     return await this.sellerRepository.save(seller);
-    }
+   // }
   }
 }

@@ -3,7 +3,7 @@ import { DelivaryDto, LoginDTO, statusDTO, updateProfileDTO } from "./delivary.d
 import { InjectRepository } from "@nestjs/typeorm";
 import { DelivaryController } from "./delivary.controller";
 
-import { Like, Repository } from "typeorm";
+import { Connection, In, Like, Repository } from "typeorm";
 import { SellerEntity } from "src/Seller/Orders.entity";
 import { promises } from "dns";
 import * as bcrypt from 'bcrypt';
@@ -26,15 +26,35 @@ constructor(
     private readonly delivaryDetailsRepository: Repository<DelivaryDEntity>,
     @InjectRepository(SellerEntity) private orderRepository: Repository<SellerEntity>,
     private mailerService: MailerService,
+    private readonly connection: Connection,
    
     ){}
     
     getIndex(): string{
         return "Hellow Delivary Man"
     }
-    getDelivaryById(id: number):object{
-        return ({id: 3, Name:"abc" ,age:23});
+    async getDelivaryById(email: string):Promise<any>{
+    
+    
+        const profile = await this.delivaryRepo.findOne({ where: { email:email } });
+        return profile;
     }
+    async findByEmail(email: string): Promise<DelivaryEntity> {
+      const delivary = await this.delivaryRepo
+        .createQueryBuilder("delivary")
+        .leftJoinAndSelect("delivary.delivaryDEntity", "delivaryDEntity")
+        .where("delivary.email = :email", { email })
+        .getOne();
+  
+      if (!delivary) {
+        throw new NotFoundException(`Delivary with email ${email} not found.`);
+      }
+      return delivary;
+    }
+  
+  
+ 
+  
   //  async addDelivary(data: DelivaryDto): Promise<DelivaryEntity>
   //   { const salt = await bcrypt.genSalt();
   //     data.password = await bcrypt.hash(data.password,salt);
@@ -65,7 +85,8 @@ constructor(
     const profile = await this.delivaryRepo.findOne({ where: { email:delivaryDto.email } });
    
 if (profile !== null) {
-      throw new NotFoundException(`Your id with email ${profile.email} already have account`);
+  //return {s: 'Invalid login'}
+  throw new NotFoundException(`Your id with email ${profile.email} already have account`);
     }   
     const delivary = new DelivaryEntity();
 
@@ -85,6 +106,7 @@ if (profile !== null) {
     delivaryDetails.vechile = delivaryDto.vechile;
     delivaryDetails.tk = delivaryDto.tk;
     delivaryDetails.address = delivaryDto.address;
+    delivaryDetails.gender = delivaryDto.gender;
     const savedCustomer = await this.delivaryRepo.save(delivary);
     const delivary1 = await this.delivaryRepo.findOne({ where: { email: delivaryDto.email } });
     delivaryDetails.delivary = delivary1;
@@ -199,6 +221,32 @@ if (profile !== null) {
       location="%"+location+"%";
         return await this.orderRepository.find({ where: { Area: Like(location ),Status:"pending"} });
       }
+   
+     
+
+    async getOrderByEmail(location): Promise<SellerEntity[]> {
+    return await this.orderRepository.find({
+      where: {
+        Delivary_man: {
+          email:location,
+        },
+        Status: "in-progress",
+      },
+      relations: ['Delivary_man'], // Load the related Delivary_man entity
+    });
+  }
+  async getHistoryEmail(location): Promise<SellerEntity[]> {
+    return await this.orderRepository.find({
+      where: {
+        Delivary_man: {
+          email: location,
+        },
+        Status: In(["completed", "rejected"]), // Use In() to match multiple statuses
+      },
+      relations: ['Delivary_man'],
+    });
+  }
+
      /* async searchCustomer(search):Promise<any>{
         search="%"+search+"%";
         return await this.custRepo.find({
@@ -238,10 +286,27 @@ if (profile !== null) {
         // Return the filtered reviews or the appropriate response
         return filteredReviews;
       }
-      async updatestatus(data: statusDTO): Promise<SellerEntity> {
-        await this.orderRepository.update(data.id, data);
-        return this.orderRepository.findOneBy({ id: data.id });
-}
+      async updatestatus(createSellerDto: statusDTO): Promise<SellerEntity> {
+        const seller = new SellerEntity();
+        seller.Seller = createSellerDto.Seller;
+        seller.Receiver = createSellerDto.Receiver;
+        seller.Product = createSellerDto.Product;
+        seller.Time = createSellerDto.Time;
+        seller.Address = createSellerDto.Address;
+        seller.Area = createSellerDto.Area;
+        
+        seller.phone = createSellerDto.phone;
+        seller.Status = createSellerDto.Status;
+    const delivary = await this.delivaryRepo.findOne({ where: { email:createSellerDto.delivaryManEmail} });
+    seller.Delivary_man = delivary;
+    if (!delivary) {
+      throw new NotFoundException('Delivery ID not found');
+    }
+    else{
+    
+        await this.orderRepository.update(createSellerDto.id, seller);
+        return this.orderRepository.findOneBy({ id: createSellerDto.id });
+}}
         async updatedelivaryId(id: number, data: statusDTO): Promise<SellerEntity> {
             await this.orderRepository.update(id, data);
             const delivary = await this.orderRepository.findOne({ where: { id:id } });
@@ -257,6 +322,15 @@ if (profile !== null) {
      
   
     }
+    else if (delivary.Status=="rejected") {
+      await this.mailerService.sendMail({
+        to: delivary.Seller, 
+        subject: 'Delivary status', 
+        text: `Your delivary is rejected by delivaryman.Product name is: ${delivary.Product} and id is ${delivary.id}`, 
+});
+
+
+}
    
             return this.orderRepository.findOneBy({ id});
         }
@@ -277,6 +351,9 @@ if (profile !== null) {
     
         await this.delivaryDetailsRepository.update(id,delivaryDetails);
         return this.delivaryDetailsRepository.findOneBy({ id});
+      }
+      async getProductById(Id: number): Promise<SellerEntity | undefined> {
+        return await this.orderRepository.findOne({ where: { id:Id } });
       }
 }
 
