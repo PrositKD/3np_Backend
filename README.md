@@ -20,7 +20,7 @@ Node.js: The runtime environment that enables running TypeScript on the server-s
 
 Next.js: A popular framework for server-rendered React applications, used here to build the backend server and handle API requests.
 
-Database (e.g., MongoDB): An efficient and scalable database to manage application data.
+Database (postgreSQL): An efficient and scalable database to manage application data.
 
 How to Run
 Clone the repository to your local machine.
