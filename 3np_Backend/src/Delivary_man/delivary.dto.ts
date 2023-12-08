@@ -66,7 +66,7 @@ export class statusDTO {
     phone: number;
     
     @IsNotEmpty()
-    tk: number;
+    tk: string;
 
   @IsNotEmpty()
     @IsIn(['bike', 'cycle', 'truck'])
@@ -75,8 +75,10 @@ export class statusDTO {
   
     @IsNotEmpty()
     address: string;
+    @IsNotEmpty()
+    gender: string;
 
-   
+    photo: string;
     
    
     

@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { DelivaryModule } from './Delivary_man/delivary.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SellerModule } from './Seller/app.module';
+import { AdminModule } from './admin/admin.module';
 
 
 @Module({
-  imports: [DelivaryModule,SellerModule,TypeOrmModule.forRoot(
+  imports: [DelivaryModule,SellerModule,AdminModule,TypeOrmModule.forRoot(
     { type: 'postgres',
     host: 'localhost',
     port: 5432,

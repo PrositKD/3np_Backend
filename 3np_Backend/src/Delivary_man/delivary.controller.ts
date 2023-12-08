@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe,Delete, UseInterceptors, Put, Patch, ParseIntPipe, UploadedFile, NotFoundException, HttpStatus, Session, UseGuards, Res } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe,Delete, UseInterceptors, Put, Patch, ParseIntPipe, UploadedFile, NotFoundException, HttpStatus, Session, UseGuards, Res, Req, UnauthorizedException } from "@nestjs/common";
 import { DelivaryService } from "./delivary.service";
 import { DelivaryDto, LoginDTO, statusDTO, updateProfileDTO } from "./delivary.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -98,6 +98,15 @@ return this.delivaryService.signup(data);
 
     }
   }
+  @Post('/signout')
+    signout( @Req() req) {
+        if (req.session.destroy()) {
+            return true;
+        }
+        else {
+            throw new UnauthorizedException("invalid actions");
+        }
+    }
 
 
 
@@ -192,14 +201,44 @@ return this.delivaryService.signup(data);
     }
 
     @Put('/updateprofileid/:id')
-  @UseGuards(SessionGuard)
-  
+ // @UseGuards(SessionGuard)
+ @UseInterceptors(
+  FileInterceptor('DPhoto', {
+    fileFilter: (req, file, cb) => {
+      if (file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Invalid file type: Only JPG, JPEG, PNG, and GIF files are allowed.'), false);
+      }
+    },
+    limits: {
+      fileSize: 1024 * 1024 * 5, 
+    },
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, `${uniqueSuffix}-${file.originalname}`);
+      },
+    }),
+  }),
+)
     @UsePipes(new ValidationPipe())
-   updated(@Param('id',ParseIntPipe) id: number, @Body() data: updateProfileDTO): object{
-      
+   updated(@Param('id',ParseIntPipe) id: number, @Body() data: updateProfileDTO, @UploadedFile() imageobj: Express.Multer.File): object{
+    console.log(data);
+    console.log(imageobj.filename);
+    data.photo = imageobj.filename;
        return  this.delivaryService.updated(id,data);
 
     }
+    @Put('/updateprofile/:id')
+    @UsePipes(new ValidationPipe())
+    update(@Param('id',ParseIntPipe) id: number, @Body() data: updateProfileDTO): object{
+     console.log(data);
+    
+        return  this.delivaryService.update(id,data);
+ 
+     }
     @Get('/product/:Id')
     getproduct(@Param('Id') Id: number): any {
       return this.delivaryService.getProductById(Id);

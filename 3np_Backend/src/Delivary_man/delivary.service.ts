@@ -204,10 +204,11 @@ if (profile !== null) {
     }
 
     delivaryDetails.name = data.name;
-    delivaryDetails.phone = data.phone;
-    delivaryDetails.vechile = data.vechile;
-    delivaryDetails.tk = data.tk;
-    delivaryDetails.address = data.address;
+delivaryDetails.phone = data.phone;// Convert to number
+delivaryDetails.vechile = data.vechile;
+delivaryDetails.tk = parseInt(data.tk, 10); // Convert to number
+delivaryDetails.address = data.address;
+
    // delivaryDetails.photo =imageobj.filename; ;
 
     return this.delivaryDetailsRepository.save(delivaryDetails);
@@ -335,19 +336,21 @@ if (profile !== null) {
             return this.orderRepository.findOneBy({ id});
         }
        
-        async updated(id: number, data: updateProfileDTO): Promise<DelivaryDEntity> {
-          const delivaryDetails = await this.delivaryDetailsRepository.findOne({ where: { id:id } });
+ async updated(id: number, data: updateProfileDTO): Promise<DelivaryDEntity> {
+  const delivaryDetails = await this.delivaryDetailsRepository.findOne({ where: { id:id } });
     
         if (!delivaryDetails) {
           throw new NotFoundException(`Delivary Details with ID ${id} not found.`);
         }
-    
         delivaryDetails.name = data.name;
-        delivaryDetails.phone = data.phone;
+        delivaryDetails.phone = data.phone; // Convert to number
         delivaryDetails.vechile = data.vechile;
-        delivaryDetails.tk = data.tk;
+        delivaryDetails.tk = parseInt(data.tk, 10); // Convert to number
         delivaryDetails.address = data.address;
-       // delivaryDetails.photo =imageobj.filename; ;
+        
+       
+        delivaryDetails.gender=data.gender;
+       delivaryDetails.photo =data.photo; 
     
         await this.delivaryDetailsRepository.update(id,delivaryDetails);
         return this.delivaryDetailsRepository.findOneBy({ id});
