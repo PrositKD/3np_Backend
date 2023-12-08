@@ -3,7 +3,7 @@ import { AdminController } from "./admin.controller";
 import { AdminService } from "./admin.service";
 import { AdminAdress, AdminEntity, AdminProfile } from "./admin.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { sellerEntity } from "../DMSeller/seller.entity";
+import { sellerEntity } from "../Delivary_man/DMSeller/seller.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
 
 

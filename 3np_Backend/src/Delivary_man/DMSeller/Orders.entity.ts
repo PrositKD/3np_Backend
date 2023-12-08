@@ -1,4 +1,4 @@
-import { DelivaryEntity } from '../Delivary_man/delivary.entity';
+import { DelivaryEntity } from '../delivary.entity';
 // import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 // import { DelivaryEntity } from "src/Delivary_man/delivary.entity";

@@ -3,7 +3,7 @@ import { AdminDTO, AdminUpdateDTO, LoginDTO, mailDTO } from "./admin.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AdminEntity } from "./admin.entity";
 import { Repository } from "typeorm";
-import { sellerEntity } from "../DMSeller/seller.entity";
+import { sellerEntity } from "../Delivary_man/DMSeller/seller.entity";
 import * as bcrypt from 'bcrypt';
 import { MailerService } from "@nestjs-modules/mailer";
 

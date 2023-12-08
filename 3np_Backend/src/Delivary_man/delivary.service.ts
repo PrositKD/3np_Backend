@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DelivaryController } from "./delivary.controller";
 
 import { Connection, In, Like, Repository } from "typeorm";
-import { SellerEntity } from "src/DMSeller/Orders.entity";
+import { SellerEntity } from "src/Delivary_man/DMSeller/Orders.entity";
 import { promises } from "dns";
 import * as bcrypt from 'bcrypt';
 import { DelivaryDEntity } from "./delivaryD.entity";
