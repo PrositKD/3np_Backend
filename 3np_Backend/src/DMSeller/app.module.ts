@@ -10,4 +10,4 @@ import { DelivaryEntity } from 'src/Delivary_man/delivary.entity';
   providers: [SellerService],
   controllers: [SellerController],
 })
-export class SellerModule {}
+export class DMSellerModule {}

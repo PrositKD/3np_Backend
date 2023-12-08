@@ -3,7 +3,7 @@ import { DelivaryController } from "./delivary.controller";
 import { DelivaryService } from "./delivary.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { DelivaryEntity } from "./delivary.entity";
-import { SellerEntity } from "src/Seller/Orders.entity";
+import { SellerEntity } from "src/DMSeller/Orders.entity";
 import { DelivaryDEntity } from "./delivaryD.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
 

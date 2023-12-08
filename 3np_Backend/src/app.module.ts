@@ -1,12 +1,25 @@
 import { Module } from '@nestjs/common';
 import { DelivaryModule } from './Delivary_man/delivary.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SellerModule } from './Seller/app.module';
+import { DMSellerModule } from './DMSeller/app.module';
 import { AdminModule } from './admin/admin.module';
+import { SellerModule } from './Seller/signUp/seller.module';
+import { LoginModule } from './Seller/logIn/login.module';
+import { ProductModule } from './Seller/productPosting/product.module';
+import { dProductModule } from './Seller/deleteProduct/product.module';
+import { ViewProductModule } from './Seller/viewProduct/viewProduct.module';
+import { DeliveryManModule } from './Seller/searchDeliveryMan/deliveryMan.module';
+import { ForgotPasswordModule } from './Seller/forgottenPass/forgotPassword.module';
 
 
 @Module({
-  imports: [DelivaryModule,SellerModule,AdminModule,TypeOrmModule.forRoot(
+  imports: [DelivaryModule,DMSellerModule,AdminModule,SellerModule,
+    LoginModule,
+    ProductModule,
+    dProductModule,
+    ViewProductModule,
+    DeliveryManModule,
+    ForgotPasswordModule,TypeOrmModule.forRoot(
     { type: 'postgres',
     host: 'localhost',
     port: 5432,

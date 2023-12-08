@@ -1,4 +1,4 @@
- import {  SellerEntity } from "../Seller/Orders.entity";
+ import {  SellerEntity } from "../DMSeller/Orders.entity";
 //import { OrdersEntity } from "src/Seller/Orders.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { DelivaryDEntity } from "./delivaryD.entity";

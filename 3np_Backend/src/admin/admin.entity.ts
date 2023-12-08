@@ -1,6 +1,6 @@
 
 import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
-import { sellerEntity } from '../seller/seller.entity';
+import { sellerEntity } from '../DMSeller/seller.entity';
 
 @Entity("Admin")
 export class AdminEntity{

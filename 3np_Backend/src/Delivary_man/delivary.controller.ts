@@ -3,7 +3,7 @@ import { DelivaryService } from "./delivary.service";
 import { DelivaryDto, LoginDTO, statusDTO, updateProfileDTO } from "./delivary.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
-import { SellerEntity } from "src/Seller/Orders.entity";
+import { SellerEntity } from "src/DMSeller/Orders.entity";
 import { IsNull } from "typeorm";
 import { SessionGuard } from "./session.gaurd";
 import { promises } from "dns";
